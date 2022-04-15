@@ -6,15 +6,17 @@ set(CMAKE_CXX_STANDARD 20)
 
 
 add_executable(GracefulTooling src/main.cpp
-        )
+        src/application.cpp src/application.h)
 
 #unfortunately, the subdirectories are having trouble with the include path stuff, so
 #just doing a global include for now. Kinda bleh but will fix later.
 include_directories(PRIVATE
+        src
         libraries/include
         libraries/include/SFML
         libraries/include/imgui
         libraries/include/imgui-sfml
+        libraries/include/graph_lite
     )
 
 #where the libraries we build from source are
@@ -83,6 +85,7 @@ if(APPLE)
     target_compile_definitions(
             GracefulTooling PRIVATE
             GL_SILENCE_DEPRECATION=1
+            GRACEFUL_CUSTOM_DPI=2.25
     )
 elseif(WIN32)
     if(MINGW)
