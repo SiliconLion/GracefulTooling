@@ -11,7 +11,10 @@
 
 #include <iostream>
 
-Application::Application(): m_graph(), m_vertex_count(0) {}
+Application::Application():
+    m_graph(), m_vertex_count(0),
+    m_graph_radius(400), m_vertex_radius(45)
+    {}
 
 void Application::reset_vertex_count(int count) {
     m_vertex_count = count;
@@ -28,6 +31,16 @@ void Application::display(sf::RenderWindow* window) {
 
 void Application::gui() {
     ImGui::Begin("Controls");
+    ImGui::Text("Appearance");
+    ImGui::SliderFloat("Graph Radius", &m_graph_radius, 100.f, 550.f);
+    ImGui::SliderFloat("Vertex Radius", &m_vertex_radius, 15.f, 90.f);
+
+    ImGui::Text("Graph Settings");
+
+    int updatedVertexCount = m_vertex_count;
+    if(ImGui::InputInt("Vertex Count", &updatedVertexCount)){
+        this->reset_vertex_count(updatedVertexCount);
+    }
     ImGui::End();
 }
 
@@ -45,16 +58,15 @@ void Application::draw_graph(sf::RenderWindow* window) {
         return;
     }
 
-    float vertex_radius = 25.0;
-    float graph_radius = 500;
     float angle_increment = 2.0 * M_PI / float(m_vertex_count);
     for(int i = 0; i < m_vertex_count; i++) {
-        float angle = i * angle_increment;
-        float vertex_center_x = (cos(angle) * graph_radius) + window_center_x;
-        float vertex_center_y = (sin(angle) * graph_radius) + window_center_y;
+        //the -pi/2 makes it so the 0'th vertex is always at the top of the cirlce
+        float angle = (i * angle_increment) - M_PI_2;
+        float vertex_center_x = (cos(angle) * m_graph_radius) + window_center_x;
+        float vertex_center_y = (sin(angle) * m_graph_radius) + window_center_y;
 
-        sf::CircleShape vertex = sf::CircleShape(vertex_radius);
-        vertex.setOrigin(vertex_radius/2.0, vertex_radius/2.0);
+        sf::CircleShape vertex = sf::CircleShape(m_vertex_radius);
+        vertex.setOrigin(m_vertex_radius/2.0, m_vertex_radius/2.0);
 
 
         vertex.setPosition(vertex_center_x, vertex_center_y);

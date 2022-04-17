@@ -24,8 +24,11 @@ public:
     int get_vertex_count();
 private:
     int m_vertex_count;
-    int mouse_x;
-    int mouse_y;
+//    int mouse_x;
+//    int mouse_y;
+    float m_graph_radius;
+    float m_vertex_radius;
+
     //an undirected graph with vertices with ints identifying vertices, a bool to denote if it
     //is currently selected, and edges labeled with ints as well.
     Graph<int, bool, int, graph_lite::EdgeDirection::UNDIRECTED> m_graph;
@@ -34,13 +37,6 @@ private:
     void draw_graph(sf::RenderWindow* window);
 };
 
-static void dummy_draw(sf::RenderWindow* window) {
-//    window->clear(app_colors::DEBUG_1);
-
-    sf::CircleShape dot = sf::CircleShape(30.0);
-    dot.setFillColor(app_colors::DEBUG_2);
-    window->draw(dot);
-};
 
 
 #endif //GRACEFULTOOLING_APPLICATION_H

@@ -34,7 +34,7 @@ int main()
 
 
     Application app;
-    app.reset_vertex_count(105);
+    app.reset_vertex_count(15);
 
 
     window.resetGLStates(); // call it if you only draw ImGui. Otherwise not needed.
@@ -48,7 +48,7 @@ int main()
                 window.close();
             }
 
-            if(event.)
+            if(event.type == sf::Event::MouseButtonPressed){}
         }
 
         ImGui::SFML::Update(window, deltaClock.restart());
