@@ -10,6 +10,7 @@
 * SFML: https://www.sfml-dev.org/index.php
 * Dear-ImGui: https://github.com/ocornut/imgui/tree/master
 * Graph_lite: https://github.com/haasdo95/graphlite
+* https://github.com/eliasdaler/imgui-sfml
 
 ### Building 
 

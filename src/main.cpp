@@ -5,14 +5,25 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include "graceful_graph.h"
+#include "color_definitions.h"
 #include "application.h"
+
+//using namespace app_colors;
+
+
+
+
 
 int main()
 {
+
+
+
+
+
     sf::RenderWindow window(sf::VideoMode(2000, 1700), "");
     window.setVerticalSyncEnabled(true);
-    ImGui::SFML::Init(window);
+    auto _ = ImGui::SFML::Init(window);
 
 //this isn't really the right way to do dpi scalling, but will scale it up, and
 // Im on a retina screen so I need this lol.
@@ -23,9 +34,9 @@ int main()
 
 
     Application app;
+    app.reset_vertex_count(105);
 
 
-    window.setTitle(app.windowTitle);
     window.resetGLStates(); // call it if you only draw ImGui. Otherwise not needed.
     sf::Clock deltaClock;
     while (window.isOpen()) {
@@ -36,13 +47,20 @@ int main()
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
+
+            if(event.)
         }
 
         ImGui::SFML::Update(window, deltaClock.restart());
 
-        app.display(window);
 
-        window.clear(app.colorAsSFColor()); // fill background with color
+
+        window.clear(app_colors::BACKGROUND_1); // fill background with color
+
+
+        app.display(&window);
+
+
         ImGui::SFML::Render(window);
         window.display();
     }

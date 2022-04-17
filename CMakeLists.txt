@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 
 add_executable(GracefulTooling src/main.cpp
-        src/application.cpp src/application.h)
+        src/application.cpp src/application.h src/color_definitions.h)
 
 #unfortunately, the subdirectories are having trouble with the include path stuff, so
 #just doing a global include for now. Kinda bleh but will fix later.

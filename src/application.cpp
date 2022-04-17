@@ -3,43 +3,63 @@
 //
 
 #include "application.h"
+#include "color_definitions.h"
+
+#include <math.h>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 
-Application::Application() {
-    m_color[0] = 0.0f;
-    m_color[1] = 0.0f;
-    m_color[2] = 0.0f;
-    memcpy(windowTitle, "ImGui + SFML = <3", 256);
+#include <iostream>
+
+Application::Application(): m_graph(), m_vertex_count(0) {}
+
+void Application::reset_vertex_count(int count) {
+    m_vertex_count = count;
+    m_graph = graph_lite::Graph<int, bool, int, graph_lite::EdgeDirection::UNDIRECTED>();
+    for (int i = 0; i < count; i++) {
+        m_graph.add_node_with_prop(i,false);
+    }
 }
 
-void Application::display(sf::RenderWindow& window) {
-    ImGui::Begin("Sample window"); // begin window
-
-    // Background color edit
-    if (ImGui::ColorEdit3("Background color", m_color)) {
-    }
-
-    // Window title text edit
-    ImGui::InputText("Window title", windowTitle, 255);
-
-    if (ImGui::Button("Update window title")) {
-        // this code gets if user clicks on the button
-        // yes, you could have written if(ImGui::InputText(...))
-        // but I do this to show how buttons work :)
-        window.setTitle(windowTitle);
-    }
-
-    ImGuiIO& io = ImGui::GetIO();
-    ImGui::DragFloat("global scale", &io.FontGlobalScale, 0.005f, 0.3, 4.0, "%.2f", ImGuiSliderFlags_AlwaysClamp); // Scale everything
-
-
-    ImGui::End(); // end window
+void Application::display(sf::RenderWindow* window) {
+    this->draw_graph(window);
+    this->gui();
 }
 
-sf::Color Application::colorAsSFColor() {
-    sf::Color bgColor;
-    bgColor.r = static_cast<sf::Uint8>(m_color[0] * 255.f);
-    bgColor.g = static_cast<sf::Uint8>(m_color[1] * 255.f);
-    bgColor.b = static_cast<sf::Uint8>(m_color[2] * 255.f);
-    return bgColor;
+void Application::gui() {
+    ImGui::Begin("Controls");
+    ImGui::End();
+}
+
+void Application::draw_graph(sf::RenderWindow* window) {
+
+
+    unsigned int window_width = window->getSize().x;
+    unsigned int window_height = window->getSize().y;
+
+    unsigned int window_center_x = window_width / 2;
+    unsigned int window_center_y = window_height / 2;
+
+    if (m_vertex_count <= 0) {
+        std::cout << "returned" << std::endl;
+        return;
+    }
+
+    float vertex_radius = 25.0;
+    float graph_radius = 500;
+    float angle_increment = 2.0 * M_PI / float(m_vertex_count);
+    for(int i = 0; i < m_vertex_count; i++) {
+        float angle = i * angle_increment;
+        float vertex_center_x = (cos(angle) * graph_radius) + window_center_x;
+        float vertex_center_y = (sin(angle) * graph_radius) + window_center_y;
+
+        sf::CircleShape vertex = sf::CircleShape(vertex_radius);
+        vertex.setOrigin(vertex_radius/2.0, vertex_radius/2.0);
+
+
+        vertex.setPosition(vertex_center_x, vertex_center_y);
+        vertex.setFillColor(app_colors::VERTEX);
+        window->draw(vertex);
+    }
+
 }
