@@ -33,8 +33,7 @@ int main()
 #endif
 
 
-    Application app;
-    app.reset_vertex_count(15);
+    Application app(15);
 
 
     window.resetGLStates(); // call it if you only draw ImGui. Otherwise not needed.
@@ -58,7 +57,7 @@ int main()
         window.clear(app_colors::BACKGROUND_1); // fill background with color
 
 
-        app.display(&window);
+        app.display(window);
 
 
         ImGui::SFML::Render(window);

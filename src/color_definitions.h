@@ -16,14 +16,14 @@ namespace app_colors {
     //slightly less dark purple
     const auto BACKGROUND_2 = sf::Color(59, 24, 95);
     //low saturation pink
-    const auto VERTEX = sf::Color(161, 37, 104);
+    const auto VERTEX_1 = sf::Color(161, 37, 104);
     //low saturation yellow
     const auto VERTEX_TEXT = sf::Color(254, 194, 96);
     //same as VERTEX_TEXT for now
     const auto VERTEX_HIGHLIGHT_1 = sf::Color(254, 194, 96);
     const auto VERTEX_HIGHLIGHT_2 = sf::Color(255, 223, 129);
     //low saturation mint green
-    const auto EDGE = sf::Color(88, 197, 158);
+    const auto EDGE_1 = sf::Color(88, 197, 158);
 
     const auto DEBUG_1 = sf::Color(255, 0, 0);
     const auto DEBUG_2 = sf::Color(0, 255, 0);
