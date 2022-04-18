@@ -11,6 +11,7 @@
 
 #include "color_definitions.h"
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Font.hpp>
 
 using graph_lite::Graph;
 
@@ -28,6 +29,8 @@ private:
 //    int mouse_y;
     float m_graph_radius;
     float m_vertex_radius;
+
+    sf::Font m_vertex_font;
 
     //an undirected graph with vertices with ints identifying vertices, a bool to denote if it
     //is currently selected, and edges labeled with ints as well.

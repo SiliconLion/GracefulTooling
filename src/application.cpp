@@ -4,17 +4,27 @@
 
 #include "application.h"
 #include "color_definitions.h"
+#include "platform_configuration.h"
 
 #include <math.h>
+#include <iostream>
+
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
 
-#include <iostream>
+
+
 
 Application::Application():
     m_graph(), m_vertex_count(0),
-    m_graph_radius(400), m_vertex_radius(45)
-    {}
+    m_graph_radius(400), m_vertex_radius(45), m_vertex_font()
+    {
+        if(!m_vertex_font.loadFromFile(ARIAL_FONT_PATH)) {
+            std::cout << "error. cannot find font arial" << std::endl;
+            exit(-1);
+        }
+    }
 
 void Application::reset_vertex_count(int count) {
     m_vertex_count = count;
@@ -31,20 +41,36 @@ void Application::display(sf::RenderWindow* window) {
 
 void Application::gui() {
     ImGui::Begin("Controls");
-    ImGui::Text("Appearance");
-    ImGui::SliderFloat("Graph Radius", &m_graph_radius, 100.f, 550.f);
-    ImGui::SliderFloat("Vertex Radius", &m_vertex_radius, 15.f, 90.f);
 
-    ImGui::Text("Graph Settings");
+    if(ImGui::CollapsingHeader("Editor")) {
+        ImGui::Text("Add Connection");
 
-    int updatedVertexCount = m_vertex_count;
-    if(ImGui::InputInt("Vertex Count", &updatedVertexCount)){
-        this->reset_vertex_count(updatedVertexCount);
+        int vertex_1 = 0, vertex_2 = 0;
+        auto inputFlags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AlwaysInsertMode;
+        ImGui::InputInt("@vertex_1", &vertex_1, inputFlags);
+        ImGui::InputInt("@vertex_2", &vertex_2, inputFlags);
+        if(ImGui::Button("Connect")){
+            this->m_graph.add_edge_with_prop(vertex_1, vertex_2, 0);
+        }
+    }
+
+    if(ImGui::CollapsingHeader("Appearance")) {
+        ImGui::SliderFloat("Graph Radius", &m_graph_radius, 100.f, 550.f);
+        ImGui::SliderFloat("Vertex Radius", &m_vertex_radius, 15.f, 90.f);
+    }
+
+    if(ImGui::CollapsingHeader("Graph Settings")) {
+        int updatedVertexCount = m_vertex_count;
+        if (ImGui::InputInt("Vertex Count", &updatedVertexCount)) {
+            this->reset_vertex_count(updatedVertexCount);
+        }
     }
     ImGui::End();
 }
 
 void Application::draw_graph(sf::RenderWindow* window) {
+
+
 
 
     unsigned int window_width = window->getSize().x;
@@ -60,6 +86,8 @@ void Application::draw_graph(sf::RenderWindow* window) {
 
     float angle_increment = 2.0 * M_PI / float(m_vertex_count);
     for(int i = 0; i < m_vertex_count; i++) {
+        sf::Text vertexLabel(std::to_string(i), m_vertex_font);
+
         //the -pi/2 makes it so the 0'th vertex is always at the top of the cirlce
         float angle = (i * angle_increment) - M_PI_2;
         float vertex_center_x = (cos(angle) * m_graph_radius) + window_center_x;
@@ -71,7 +99,13 @@ void Application::draw_graph(sf::RenderWindow* window) {
 
         vertex.setPosition(vertex_center_x, vertex_center_y);
         vertex.setFillColor(app_colors::VERTEX);
+
+        //this will look somewhat off as origin is top left centered, not center centered
+        vertexLabel.setPosition(vertex_center_x, vertex_center_y);
+        vertexLabel.setFillColor(app_colors::VERTEX_TEXT);
+
         window->draw(vertex);
+        window->draw(vertexLabel);
     }
 
 }
