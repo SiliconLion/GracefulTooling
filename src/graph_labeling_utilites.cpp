@@ -9,6 +9,6 @@
 int vertex_distance(int vertex1, int vertex2, int vertexCount) {
     return std::min(
             std::abs(vertex1 - vertex2) % vertexCount,
-            std::abs(vertex2 - vertex1) % vertexCount
+            vertexCount - std::abs(vertex1 - vertex2)
             );
 }

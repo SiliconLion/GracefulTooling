@@ -36,8 +36,9 @@ class GuiDrawSettings {
 public:
     float m_vertexRadius;
     float m_graphRadius;
+    float m_edgeWidth;
     sf::Font m_vertexFont;
-    GuiDrawSettings(float vertexRadius = 45.f, float graphRadius = 400.f);
+    GuiDrawSettings(float vertexRadius = 45.f, float graphRadius = 400.f, float edgeWidth = 20.f);
 };
 
 class GuiGraph {
@@ -50,6 +51,8 @@ public:
     //if the vertex or edge does not exist
     bool addEdge(int vertex1, int vertex2,
                  sf::Color color=app_colors::EDGE_1, std::optional<int> label=std::nullopt);
+    bool addEdge(int vertex1, int vertex2,
+                 float color[3], std::optional<int> label=std::nullopt);
     bool removeEdge(int vertex1, int vertex2);
     bool labelEdge(int vertex1, int vertex2, int label);
     bool unlabelEdge(int vertex1, int vertex2);

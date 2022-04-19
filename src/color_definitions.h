@@ -23,7 +23,9 @@ namespace app_colors {
     const auto VERTEX_HIGHLIGHT_1 = sf::Color(254, 194, 96);
     const auto VERTEX_HIGHLIGHT_2 = sf::Color(255, 223, 129);
     //low saturation mint green
-    const auto EDGE_1 = sf::Color(88, 197, 158);
+    const auto EDGE_1 = sf::Color(40, 90, 70);
+
+    const auto EDGE_TEXT = sf::Color(254, 230, 215);
 
     const auto DEBUG_1 = sf::Color(255, 0, 0);
     const auto DEBUG_2 = sf::Color(0, 255, 0);
