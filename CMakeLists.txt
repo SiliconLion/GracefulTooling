@@ -16,7 +16,7 @@ add_executable(GracefulTooling
 #        src/graph_labeling_utilities.h
         src/graph_labeling_utilites.cpp
         src/gui_graph.cpp
-        )
+        src/utilities.cpp)
 
 #unfortunately, the subdirectories are having trouble with the include path stuff, so
 #just doing a global include for now. Kinda bleh but will fix later.

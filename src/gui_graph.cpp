@@ -15,6 +15,7 @@
 
 #include "graph_labeling_utilities.h"
 #include "platform_configuration.h"
+#include "utilities.h"
 
 GuiVertexData::GuiVertexData(sf::Color color, std::optional<int> label) :
     m_color(color), m_label(label)
@@ -35,7 +36,8 @@ GuiGraph::GuiGraph(int vertexCount, GuiDrawSettings settings):
 {
     graph_lite::Graph<int, GuiVertexData, GuiEdgeData, EdgeDirection::UNDIRECTED> t;
     for(int i = 0; i < vertexCount; i++) {
-        m_graph.add_node_with_prop(i, GuiVertexData());
+        GuiVertexData vertData(app_colors::VERTEX_1, std::nullopt);
+        m_graph.add_node_with_prop(i, vertData);
     }
 }
 
@@ -48,12 +50,7 @@ bool GuiGraph::addEdge(int vertex1, int vertex2,
 
 bool GuiGraph::addEdge(int vertex1, int vertex2,
              float color[3], std::optional<int> label) {
-    sf::Color c(
-            sf::Uint8(color[0] * 255.f),
-            sf::Uint8(color[1] * 255.f),
-            sf::Uint8(color[2] * 255.f),
-            255
-            );
+    sf::Color c(from_float3(color));
     GuiEdgeData data(vertex_distance(vertex1, vertex2, m_graph.size()), c, label);
     //ToDo: intercept the std::cerr output or verify the vertices are valid
     return bool( m_graph.add_edge_with_prop(vertex1, vertex2, data) );
@@ -144,7 +141,7 @@ void GuiGraph::display(sf::RenderWindow& window){
     float graphRadius = m_drawSettings.m_graphRadius;
 
     if (vertexCount <= 0) {
-        std::cout << "drawing empty graph" << std::endl;
+//        std::cout << "drawing empty graph" << std::endl;
         return;
     }
 
@@ -156,9 +153,9 @@ void GuiGraph::display(sf::RenderWindow& window){
     std::vector<sf::RectangleShape> edges;
     std::vector<sf::Text> edgeLabels;
 
-    int i = 0;
-    for(auto itt = m_graph.begin(); itt != m_graph.end(); itt++) {
-        auto nodeProp = m_graph.node_prop(itt);
+
+    for(int i = 0; i < vertexCount; i++) {
+        auto nodeProp = m_graph.node_prop(i);
 //the -pi/2 makes it so the 0'th vertex is always at the top of the cirlce
         float angle = (i * angle_increment) - M_PI_2;
         float vertex_center_x = (cos(angle) * graphRadius) + window_center_x;
@@ -169,10 +166,11 @@ void GuiGraph::display(sf::RenderWindow& window){
         vertex.setOrigin(vertexRadius / 2.0, vertexRadius / 2.0);
         vertex.setPosition(vertex_center_x, vertex_center_y);
         vertex.setFillColor(nodeProp.m_color);
-        i++; //need this because i is not incrimented by the for loop.
     }
 
-    for(i = 0; i < vertexCount; i++){
+    for(int i = 0; i < vertexCount; i++){
+//        auto prop = m_graph.node_prop(i);
+
         vertLabels.emplace_back(sf::Text(std::to_string(i), vertexFont));
         sf::Text& vertexLabel = vertLabels.at(i);
 //        vertexLabel.setOrigin(vertexLabel.getLocalBounds().width/ 2.f, vertexLabel.getLocalBounds().height / 2.f);
@@ -181,28 +179,26 @@ void GuiGraph::display(sf::RenderWindow& window){
     }
 
     //TODO: make it so this doesn't include every edge twice.
-    i = 0;
     for(auto itt = m_graph.begin(); itt != m_graph.end(); itt++) {
         int currentVertex = *itt;
         auto neighbors = m_graph.neighbors(itt);
         while(neighbors.first != neighbors.second) {
             auto neighborVertex = (*(neighbors.first)).first;
-//            std::array line = {sf::Vertex(vertices.at(currentVertex).getPosition()),
-//                               sf::Vertex(vertices.at(neighbor).getPosition())};
-//            edges.push_back(line);
+
             sf::Vector2 startPos = vertices.at(currentVertex).getPosition();
             sf::Vector2 endPos = vertices.at(neighborVertex).getPosition();
             float lineLength = sqrt( pow(startPos.x - endPos.x, 2.f) + pow(startPos.y - endPos.y, 2.f));
             float angle =
                     atan( (startPos.x - endPos.x)/(startPos.y - endPos.y)) * (-180.f / M_PI);
 
+            auto prop = m_graph.edge_prop(currentVertex, neighborVertex);
+
             sf::RectangleShape line(sf::Vector2(m_drawSettings.m_edgeWidth, lineLength));
             line.setOrigin(line.getSize().x / 2.f, line.getSize().y / 2.f);
             line.setPosition( (startPos + endPos) / 2.f);
             line.setRotation(angle);
-            line.setFillColor(app_colors::EDGE_1);
+            line.setFillColor(prop.m_color);
 
-            auto prop = m_graph.edge_prop(currentVertex, neighborVertex);
             sf::Text label = (sf::Text(std::to_string(prop.m_length), vertexFont));
             label.setOrigin(label.getLocalBounds().width/ 2.f, label.getLocalBounds().height / 2.f);
             label.setPosition(line.getPosition());

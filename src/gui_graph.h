@@ -18,16 +18,16 @@ using graph_lite::EdgeDirection;
 
 class GuiVertexData {
 public:
-    sf::Color m_color;
     std::optional<int> m_label;
+    sf::Color m_color;
     GuiVertexData(sf::Color color=app_colors::VERTEX_1, std::optional<int> label=std::nullopt);
 };
 
 class GuiEdgeData {
 public:
     int m_length;
-    sf::Color m_color;
     std::optional<int> m_label;
+    sf::Color m_color;
     GuiEdgeData(int length, sf::Color color=app_colors::EDGE_1,
                 std::optional<int> label=std::nullopt);
 };

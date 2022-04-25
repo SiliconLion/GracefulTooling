@@ -5,6 +5,7 @@
 #include "application.h"
 #include "color_definitions.h"
 #include "platform_configuration.h"
+#include "utilities.h"
 
 #include <math.h>
 #include <iostream>
@@ -94,12 +95,31 @@ void Application::gui() {
 
         ImGui::Text("Coloring");
         ImGui::SameLine();
-        ImGui::InputInt("#vertex to color", &m_guiState.vertex_5);
-        if(ImGui::ColorButton("##Edge Color 2", m_guiState.color1)) {
-            ImGui::OpenPopup("Edge Color Picker");
+        ImGui::InputInt("Vertex to color", &m_guiState.vertex_5);
+        if(ImGui::ColorButton("##Vertex Color Picker", m_guiState.color2)) {
+            ImGui::OpenPopup("Vertex Color Picker");
         }
-        if(ImGui::Button("Color Vertex")) {
 
+
+        if (ImGui::BeginPopupModal("Vertex Color Picker", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+            auto flags =    ImGuiColorEditFlags_NoAlpha;
+//                            ImGuiColorEditFlags_
+            auto color2Copy = m_guiState.color2;
+            ImGui::ColorPicker3("Color Picker", (float*)&(m_guiState.color2), flags);
+            if(ImGui::Button("Done")) {ImGui::CloseCurrentPopup();}
+            ImGui::SameLine();
+            if(ImGui::Button("Cancel")){
+                m_guiState.color2 = color2Copy;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+
+
+        if(ImGui::Button("Color Vertex")) {
+            std::cout << m_guiState.vertex_5 << std::endl;
+            m_graph.colorVertex(m_guiState.vertex_5, from_ImVec4(m_guiState.color2));
         }
     }
 
@@ -113,28 +133,25 @@ void Application::gui() {
     }
 
     if(ImGui::CollapsingHeader("Graph Settings")) {
-        int updatedVertexCount = m_vertex_count;
 
-        bool allowDestructiveAction = false;
-        ImGui::InputInt("Vertex Count", &updatedVertexCount);
+        ImGui::InputInt("Vertex Count", &(m_guiState.newVertexCount));
+
+        if(ImGui::Button("Update Graph")) {
+            ImGui::OpenPopup("Warning: Destructive Action");
+        }
 
         if(ImGui::BeginPopupModal("Warning: Destructive Action")) {
             ImGui::Text("WARNING! This action will reset the graph. Do you wish to proceed?");
             if(ImGui::Button("Yes")) {
-                allowDestructiveAction = true;
+                this->newGraphWithCount(m_guiState.newVertexCount);
                 ImGui::CloseCurrentPopup();
             }
-            if(ImGui::Button("No!")) {ImGui::CloseCurrentPopup();}
+            if(ImGui::Button("No!")) {
+                ImGui::CloseCurrentPopup();
+            }
 
 
             ImGui::EndPopup();
-        }
-
-        if(ImGui::Button("Update Graph")) {
-            ImGui::OpenPopup("Warning: Destructive Action");
-            if (allowDestructiveAction) {
-                this->newGraphWithCount(updatedVertexCount);
-            }
         }
 
 
