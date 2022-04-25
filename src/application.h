@@ -30,6 +30,8 @@ public:
     int vertex_3 = 0;
     int vertex_4 = 0;
     int vertex_5 = 0;
+    int vertex_6 = 0;
+    int vertex_7 = 0;
     ImVec4 color1 = {
             float(app_colors::EDGE_1.r) / 255.f,
             float(app_colors::EDGE_1.g) / 255.f,
@@ -40,6 +42,12 @@ public:
             float(app_colors::VERTEX_1.r) / 255.f,
             float(app_colors::VERTEX_1.g) / 255.f,
             float(app_colors::VERTEX_1.b) / 255.f,
+            1.0
+    };
+    ImVec4 color3 = {
+            float(app_colors::EDGE_1.r) / 255.f,
+            float(app_colors::EDGE_1.g) / 255.f,
+            float(app_colors::EDGE_1.b) / 255.f,
             1.0
     };
     int newVertexCount = 0;

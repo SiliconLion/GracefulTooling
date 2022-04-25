@@ -46,7 +46,7 @@ void Application::gui() {
     ImGui::Begin("Controls");
 
     if(ImGui::CollapsingHeader("Editor")) {
-        ImGui::Text("Add Connection");
+        ImGui::Text("Connections");
 
         //probably very bad form to make these global, there's not a good reason to
         //make them dedicated variables in the application class, other than so that the
@@ -60,7 +60,7 @@ void Application::gui() {
         ImGui::InputInt("##Vertex 2", &(m_guiState.vertex_2), inputFlags);
 //        ImGui::SameLine();
 
-        if (ImGui::BeginPopupModal("Edge Color Picker", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        if (ImGui::BeginPopupModal("Edge Color Picker 1", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
             auto flags =    ImGuiColorEditFlags_NoAlpha;
 //                            ImGuiColorEditFlags_
             auto color1Copy = m_guiState.color1;
@@ -76,9 +76,9 @@ void Application::gui() {
         }
 
         if(ImGui::ColorButton("##Edge Color 1", m_guiState.color1)) {
-            ImGui::OpenPopup("Edge Color Picker");
+            ImGui::OpenPopup("Edge Color Picker 1");
         }
-
+        ImGui::SameLine();
         if(ImGui::Button("Connect")){
             this->m_graph.addEdge(m_guiState.vertex_1, m_guiState.vertex_2, (float*)&(m_guiState.color1) );
         }
@@ -92,10 +92,11 @@ void Application::gui() {
             this->m_graph.removeEdge(m_guiState.vertex_3, m_guiState.vertex_4);
         }
 
+        ImGui::Separator();
 
         ImGui::Text("Coloring");
-        ImGui::SameLine();
-        ImGui::InputInt("Vertex to color", &m_guiState.vertex_5);
+//        ImGui::Text("Vertex to Color");
+        ImGui::InputInt("##Vertex to color", &m_guiState.vertex_5);
         if(ImGui::ColorButton("##Vertex Color Picker", m_guiState.color2)) {
             ImGui::OpenPopup("Vertex Color Picker");
         }
@@ -116,10 +117,39 @@ void Application::gui() {
             ImGui::EndPopup();
         }
 
-
+        ImGui::SameLine();
         if(ImGui::Button("Color Vertex")) {
-            std::cout << m_guiState.vertex_5 << std::endl;
             m_graph.colorVertex(m_guiState.vertex_5, from_ImVec4(m_guiState.color2));
+        }
+
+
+//        ImGui::Text("Color Edge");
+        ImGui::InputInt("##Input Vertex 6", &(m_guiState.vertex_6), inputFlags);
+//        ImGui::SameLine();
+        ImGui::InputInt("##Input Vertex 7", &(m_guiState.vertex_7), inputFlags);
+        if(ImGui::ColorButton("##Edge Color Picker2", m_guiState.color3)) {
+            ImGui::OpenPopup("Edge Color Picker 2");
+        }
+
+
+        if (ImGui::BeginPopupModal("Edge Color Picker 2", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+            auto flags =    ImGuiColorEditFlags_NoAlpha;
+//                            ImGuiColorEditFlags_
+            auto color3Copy = m_guiState.color3;
+            ImGui::ColorPicker3("Color Picker", (float*)&(m_guiState.color3), flags);
+            if(ImGui::Button("Done")) {ImGui::CloseCurrentPopup();}
+            ImGui::SameLine();
+            if(ImGui::Button("Cancel")){
+                m_guiState.color3 = color3Copy;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::SameLine();
+        if(ImGui::Button("Color Edge")) {
+            m_graph.colorEdge(m_guiState.vertex_6, m_guiState.vertex_7, from_ImVec4(m_guiState.color3));
         }
     }
 
